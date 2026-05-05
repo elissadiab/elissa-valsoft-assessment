@@ -1,4 +1,3 @@
-
 # ArcVault AI Automated Workflow
 
 AI-powered intake, classification, enrichment, routing, and escalation workflow for ArcVault customer requests.
@@ -29,7 +28,7 @@ The five required assessment sample inputs are included in:
 
 ```text
 app/sample_data.py
-````
+```
 
 The generated output records are saved in:
 
@@ -59,6 +58,7 @@ JSON Output File
 
 ### Main tools used
 
+
 | Tool      | Purpose                                         |
 | --------- | ----------------------------------------------- |
 | FastAPI   | Exposes the workflow through API endpoints      |
@@ -68,18 +68,19 @@ JSON Output File
 | Streamlit | Provides a simple demo dashboard                |
 | JSON file | Stores the final structured output records      |
 
+
 ---
 
 ## 3. Why This Architecture
 
 I separated the workflow into clear responsibilities:
 
-* The **LLM** understands the unstructured customer message.
-* **Pydantic** validates that the LLM output follows the expected schema.
-* **LangGraph** manages the workflow steps and shared state.
-* **Python rules** handle routing and escalation decisions.
-* **FastAPI** exposes the workflow as a backend service.
-* **Streamlit** makes the workflow easy to demonstrate visually.
+- The **LLM** understands the unstructured customer message.
+- **Pydantic** validates that the LLM output follows the expected schema.
+- **LangGraph** manages the workflow steps and shared state.
+- **Python rules** handle routing and escalation decisions.
+- **FastAPI** exposes the workflow as a backend service.
+- **Streamlit** makes the workflow easy to demonstrate visually.
 
 This keeps the system explainable, testable, and easier to extend.
 
@@ -105,35 +106,36 @@ A request enters the system through FastAPI, Streamlit, or the included sample d
 
 The LLM classifies the request into one of:
 
-* Bug Report
-* Feature Request
-* Billing Issue
-* Technical Question
-* Incident/Outage
+- Bug Report
+- Feature Request
+- Billing Issue
+- Technical Question
+- Incident/Outage
 
 It also assigns:
 
-* Priority: Low, Medium, or High
-* Confidence score between 0.0 and 1.0
+- Priority: Low, Medium, or High
+- Confidence score between 0.0 and 1.0
 
 ### Step 3 — Enrichment
 
 The LLM extracts:
 
-* Core issue
-* Account IDs
-* Invoice numbers
-* Error codes
-* Product or integration names
-* Monetary amounts
-* Time references
-* Affected scope
-* Urgency signal
-* Summary for the receiving team
+- Core issue
+- Account IDs
+- Invoice numbers
+- Error codes
+- Product or integration names
+- Monetary amounts
+- Time references
+- Affected scope
+- Urgency signal
+- Summary for the receiving team
 
 ### Step 4 — Routing
 
 Routing is deterministic and handled in Python.
+
 
 | Category           | Default Queue     |
 | ------------------ | ----------------- |
@@ -142,6 +144,7 @@ Routing is deterministic and handled in Python.
 | Billing Issue      | Billing Queue     |
 | Technical Question | IT/Security Queue |
 | Incident/Outage    | Engineering Queue |
+
 
 ### Step 5 — Escalation
 
@@ -153,11 +156,11 @@ Human Escalation Queue
 
 Escalation happens when:
 
-* Confidence is below `0.70`
-* The request is classified as `Incident/Outage`
-* The message contains service-impact language
-* Multiple users or a wider team are affected
-* A billing discrepancy appears greater than `$500`
+- Confidence is below `0.70`
+- The request is classified as `Incident/Outage`
+- The message contains service-impact language
+- Multiple users or a wider team are affected
+- A billing discrepancy appears greater than `$500`
 
 Low-confidence cases are treated as fallback cases and routed to the Human Escalation Queue.
 
@@ -216,8 +219,10 @@ elissa-arcvault-automated-workflow/
 ├── prompts/
 │   └── triage_prompt.md
 │
-├── docs/
-│
+├── docs/ 
+│   └── Architecture_writeup.md
+│   └── prompts_documentation.md
+│   
 ├── requirements.txt
 ├── .env.example
 ├── .gitignore
@@ -368,6 +373,7 @@ http://127.0.0.1:8000
 
 ## 10. FastAPI Endpoints
 
+
 | Method | Endpoint          | Description                      |
 | ------ | ----------------- | -------------------------------- |
 | GET    | `/`               | Basic welcome route              |
@@ -376,6 +382,7 @@ http://127.0.0.1:8000
 | POST   | `/triage/samples` | Process the five sample requests |
 | GET    | `/results`        | Read saved output records        |
 | DELETE | `/results`        | Clear saved output records       |
+
 
 Example request for `/triage`:
 
@@ -453,30 +460,41 @@ Example processed record:
 
 If this workflow were moved to production, I would add:
 
-* Retry logic for failed LLM calls
-* Request timeouts and fallback handling
-* API authentication
-* Secret management through a vault
-* Structured logging and tracing
-* Per-node latency monitoring
-* Database persistence instead of JSON files
-* Human review dashboard
-* Evaluation dataset for classification accuracy
-* Prompt versioning
-* Integration with ticketing systems such as Jira, Zendesk, or HubSpot
+- Retry logic for failed LLM calls
+- Request timeouts and fallback handling
+- API authentication
+- Secret management through a vault
+- Structured logging and tracing
+- Per-node latency monitoring
+- Database persistence instead of JSON files
+- Human review dashboard
+- Evaluation dataset for classification accuracy
+- Prompt versioning
+- Integration with ticketing systems such as Jira, Zendesk, or HubSpot
 
 ---
 
 ## 14. Phase 2 Ideas
 
-With another week, I would add:
+With another week, I would focus on making the workflow more useful after the initial triage step.
 
-1. **Human review dashboard** for escalated records.
-2. **Google Sheets or Airtable integration** for business-friendly output review.
-3. **Webhook.site mock destinations** to simulate downstream team queues.
-4. **Evaluation script** to compare predictions against expected labels.
-5. **Model fallback** in case Groq is unavailable.
-6. **Docker support** for easier deployment and reproducibility.
+1. **Support team review dashboard**  
+
+   I would improve the dashboard so support team members can review routed requests, mark what action they took, update the status, flag wrong classifications, and record how the issue was resolved. This would create a feedback loop to improve the prompt, routing rules, and escalation logic over time.
+
+2. **Automated customer replies**  
+
+   I would add automated customer reply drafts. After a request is classified and routed, the system could prepare a short acknowledgement message telling the customer that the request was received, which team will handle it, and what the next step is.
+
+3. **Documentation-based LLM assistant**  
+
+   For Technical Questions, I would add a documentation-based LLM assistant. The system could search ArcVault’s product documentation and suggest an answer when confidence is high. If the answer is unclear or unsupported by the documentation, the request would stay routed to IT/Security for human review.
+
+4. **Production readiness improvements**  
+
+   I would also add production improvements such as Google Sheets or ticketing-system integration, model fallback if Groq is unavailable, and Docker support for easier setup and reproducibility.
+
+
 
 ---
 
@@ -498,5 +516,5 @@ JSON → stores the final output
 
 This makes the system clear, testable, auditable, and ready for future production improvements.
 
-```
-```
+
+
