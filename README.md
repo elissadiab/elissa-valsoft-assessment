@@ -231,7 +231,7 @@ elissa-arcvault-automated-workflow/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/elissa-arcvault-automated-workflow.git
+git clone https://github.com/elissadiab/elissa-valsoft-assessment.git
 cd elissa-arcvault-automated-workflow
 ```
 
