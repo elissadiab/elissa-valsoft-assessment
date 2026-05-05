@@ -166,20 +166,17 @@ st.caption(
 )
 
 with st.sidebar:
-    st.header("Backend")
+    st.header("Backend Connection")
 
     health = call_api("GET", "/health")
+
     if health:
-        st.success("FastAPI connected")
+        st.success("FastAPI backend connected")
+        st.caption(f"Service: {health.get('service', 'ArcVault API')}")
+        st.link_button("Open FastAPI Docs", f"{API_BASE_URL}/docs")
     else:
-        st.error("FastAPI not connected")
-
-    st.markdown("Run backend:")
-    st.code("uvicorn app.main:app --reload --port 8000")
-
-    st.markdown("Run dashboard:")
-    st.code("streamlit run dashboard/streamlit_app.py")
-
+        st.error("FastAPI backend is not available")
+        st.caption("Start the backend service before running requests.")
 
 tab_console, tab_samples = st.tabs(
     [
