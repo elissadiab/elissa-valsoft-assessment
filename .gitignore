@@ -23,3 +23,6 @@ temp/
 .streamlit/secrets.toml
 
 .for_me.txt
+
+outputs/
+*.log
