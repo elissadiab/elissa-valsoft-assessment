@@ -33,6 +33,17 @@ app = FastAPI(
     version="1.0.0",
 )
 
+@app.get("/")
+def root():
+    """
+    Basic welcome endpoint for the API.
+    """
+    return {
+        "message": "ArcVault AI Intake & Triage API is running.",
+        "docs": "http://127.0.0.1:8000/docs",
+        "health": "http://127.0.0.1:8000/health",
+    }
+    
 
 @app.get("/health")
 def health_check():
