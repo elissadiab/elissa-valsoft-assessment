@@ -1,0 +1,40 @@
+Why I used langchain-core and lngchain-groq next to langgraph?
+
+I used LangGraph as the orchestration layer because the assessment 
+required a multi-step workflow. I used LangChain’s Groq integration 
+only as the LLM client layer, because it gave me a clean way to 
+call Groq and enforce structured output through Pydantic. 
+This kept the workflow modular: LangGraph manages process flow, 
+Groq handles language understanding, and Python rules handle 
+routing and escalation.
+
+LangGraph = workflow orchestration
+LangChain Core = message structure
+LangChain Groq = Groq LLM connection
+Pydantic = validation of the LLM result
+
+
+
+
+
+What is FastAPI?
+
+FastAPI is a Python web framework used to build APIs.
+Where our backend layer does the workflow through HTTP endpoints like:
+POST /triage
+POST /triage/samples
+GET /results
+DELETE /results
+
+
+Why FastAPI? and not Flask?
+
+We used FastAPI because this project is supposed to simulate a 
+real AI automation workflow. In a company, the workflow would 
+usually be triggered by another system: support portal, CRM, 
+webhook, form submission, or internal tool.
+
+I used FastAPI instead of Flask because the workflow is 
+schema-driven. FastAPI integrates directly with Pydantic, 
+automatically validates request and response models, and 
+provides interactive API documentation through /docs.
