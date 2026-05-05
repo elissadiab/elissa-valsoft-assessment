@@ -49,7 +49,7 @@ def build_llm() -> ChatGroq:
     return ChatGroq(
         groq_api_key=api_key,
         model_name=get_model_name(),
-        temperature=0,
+        temperature=0, # 0 to be deterministic and as consistent as possible
     )
 
 

@@ -20,33 +20,37 @@ Your task is to analyze one inbound customer request and produce a structured tr
 
 Classify the request into exactly one category:
 
-- "Bug Report": a malfunction, error, or unexpected product behavior
-- "Feature Request": a request for new or improved functionality
-- "Billing Issue": a concern about invoices, charges, refunds, or contract pricing
-- "Technical Question": a how-to, setup, configuration, integration, or authentication question that is not clearly a product defect
-- "Incident/Outage": an active service disruption affecting one or more users right now
+- "Bug Report": choose this when the customer describes an existing feature that is failing, producing an error, or not working as expected.
 
-Assign exactly one priority:
+- "Feature Request": choose this when the customer wants a new capability, an enhancement, or a workflow improvement, without reporting a current failure.
+
+- "Billing Issue": choose this when the message concerns invoices, payments, refunds, contract rates, subscriptions, or unexpected charges.
+
+- "Technical Question": choose this when the customer asks how to configure, integrate, authenticate, set up, or use ArcVault, and the message does not clearly describe a defect.
+
+- "Incident/Outage": choose this when the message indicates an active service interruption, unavailable dashboard/API, system-wide failure, or impact on multiple users.
+
+Assign exactly one priority based on business impact:
 
 - "High":
-  - active outage or service disruption
-  - multiple users or an entire team affected
-  - production workflow blocked
-  - security, compliance, data loss, or data integrity risk
-  - strong urgency language such as urgent, ASAP, blocking, or not usable
+  - the product or a major feature appears unavailable
+  - more than one user, team, or customer workflow is affected
+  - the issue blocks an important production task
+  - the message suggests security exposure, compliance risk, data loss, or incorrect data
+  - the customer uses urgent language such as urgent, ASAP, blocking, cannot work, or unusable
 
 - "Medium":
-  - single-user bug or limited-scope issue
-  - billing discrepancy or payment concern
-  - technical question blocking implementation
-  - performance degradation where the product is still usable
-  - feature request with operational, compliance, or security impact
+  - the issue affects one user or a limited area of the product
+  - the customer reports a billing or payment discrepancy
+  - the customer needs technical guidance before they can continue setup or implementation
+  - the product is slow or degraded, but still partially usable
+  - the request could improve compliance, auditability, operations, or team efficiency
 
 - "Low":
-  - general feature request without urgency
-  - general informational question
-  - minor usability or cosmetic request
-  - low-risk technical inquiry
+  - the request is useful but not time-sensitive
+  - the message is asking for general information or normal product guidance
+  - the request is cosmetic, minor, or does not affect current work
+  - there is no clear urgency, risk, or blocked workflow
 
 Return a confidence_score between 0.0 and 1.0.
 Use lower confidence when the message is ambiguous or could fit multiple categories.
@@ -54,7 +58,6 @@ Use lower confidence when the message is ambiguous or could fit multiple categor
 Extract only identifiers that are clearly present in the message.
 Do not invent account IDs, invoice numbers, error codes, amounts, integrations, or affected scope.
 For list fields, always return an empty array [] when no values are found. Do not return null for list fields.
-
 
 The summary should be 2 to 3 sentences for the receiving team.
 It should mention:
